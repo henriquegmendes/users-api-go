@@ -6,23 +6,15 @@ import (
 	"github.com/thedevsaddam/govalidator"
 )
 
-type UserCreateRequest struct {
-	Name           string `json:"name"`
-	Age            int    `json:"age"`
-	Email          string `json:"email"`
-	Password       string `json:"password"`
-	RepeatPassword string `json:"repeat_password"`
-	Address        string `json:"address"`
+type UserAuthRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-func (u UserCreateRequest) ValidateUserCreateRequest() url.Values {
+func (u UserAuthRequest) ValidateUserAuthRequest() url.Values {
 	rules := govalidator.MapData{
-		"name":            []string{"required", "min:3", "max:100"},
-		"age":             []string{"required"},
-		"email":           []string{"required", "min:4", "max:100", "email"},
-		"password":        []string{"required", "min:6", "max:100"},
-		"repeat_password": []string{"required", "min:6", "max:100"},
-		"address":         []string{"min:3", "max:200"},
+		"email":    []string{"required", "min:4", "max:100", "email"},
+		"password": []string{"required", "min:6", "max:100"},
 	}
 
 	opts := govalidator.Options{

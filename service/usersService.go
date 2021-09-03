@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"henrique.mendes/users-api/dtos/request"
+	"henrique.mendes/users-api/dtos/response"
 	"henrique.mendes/users-api/mappers"
 	"henrique.mendes/users-api/models"
 	"henrique.mendes/users-api/repository"
@@ -25,4 +26,22 @@ func Create(data *request.UserCreateRequest) (models.User, error) {
 
 func FindByEmail(email string) models.User {
 	return repository.FindByEmail(email)
+}
+
+func FindById(userId uint) response.UserResponse {
+	user := repository.FindById(userId)
+
+	return mappers.ToUserResponse(user)
+}
+
+func FindByNamePaginated(name string, page int, limit int) response.UsersListResponse {
+	users, total := repository.FindByNamePaginated(name, page, limit)
+
+	return mappers.ToUsersListResponse(users, total, page, limit)
+}
+
+func UpdateUserById(userId uint64, data request.UserUpdateRequest) response.UserResponse {
+	user := repository.UpdateUserById(userId, data)
+
+	return mappers.ToUserResponse(user)
 }
