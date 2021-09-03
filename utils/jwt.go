@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"henrique.mendes/users-api/models"
 )
 

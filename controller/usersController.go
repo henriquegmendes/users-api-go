@@ -52,3 +52,7 @@ func Auth(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(response)
 }
+
+func Test(c *fiber.Ctx) error {
+	return c.SendStatus(200)
+}
