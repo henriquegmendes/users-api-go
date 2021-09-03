@@ -8,7 +8,13 @@ import (
 	"henrique.mendes/users-api/service"
 )
 
-func CreateUser(c *fiber.Ctx) error {
+func NewAuthController(service *service.UsersService) *UsersController {
+	return &UsersController{
+		service: service,
+	}
+}
+
+func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 	data := new(request.UserCreateRequest)
 	if err := c.BodyParser(data); err != nil {
 		return c.Status(503).Send([]byte(err.Error()))
@@ -19,7 +25,7 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(validation)
 	}
 
-	userResponse, err := service.Create(data)
+	userResponse, err := contr.service.Create(data)
 	if err != nil {
 		return c.Status(400).Send([]byte(err.Error()))
 	}
@@ -27,7 +33,7 @@ func CreateUser(c *fiber.Ctx) error {
 	return c.Status(201).JSON(userResponse)
 }
 
-func AuthUser(c *fiber.Ctx) error {
+func (contr UsersController) AuthUser(c *fiber.Ctx) error {
 	data := new(request.UserAuthRequest)
 	if err := c.BodyParser(data); err != nil {
 		return c.Status(503).Send([]byte(err.Error()))
@@ -38,7 +44,7 @@ func AuthUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(validation)
 	}
 
-	userResponse, err := service.FindByEmail(*data)
+	userResponse, err := contr.service.FindByEmail(*data)
 	if err != nil {
 		if strings.Contains(err.Error(), "credentials") {
 			return c.Status(400).JSON(fiber.Map{

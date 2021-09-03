@@ -5,21 +5,37 @@ import (
 	jwtware "github.com/gofiber/jwt/v3"
 	"henrique.mendes/users-api/controller"
 	"henrique.mendes/users-api/middlewares"
+	"henrique.mendes/users-api/repository"
+	"henrique.mendes/users-api/service"
 )
 
 func SetupRoutes(app *fiber.App) {
-	app.Post("/users", controller.CreateUser)
-	app.Post("/users/auth", controller.AuthUser)
+	authMiddleware := middlewares.NewAuthMiddleware(
+		repository.NewUsersRepository(),
+	)
+	authController := controller.NewAuthController(
+		service.NewUsersService(
+			repository.NewUsersRepository(),
+		),
+	)
+	usersController := controller.NewUsersController(
+		service.NewUsersService(
+			repository.NewUsersRepository(),
+		),
+	)
+
+	app.Post("/users", authController.CreateUser)
+	app.Post("/users/auth", authController.AuthUser)
 
 	app.Use(
 		jwtware.New(jwtware.Config{
 			SigningKey: []byte("secret"),
 		}),
-		middlewares.CheckAuthUserExists,
+		authMiddleware.CheckAuthUserExists,
 	)
 
-	app.Get("/users", controller.GetUsers)
-	app.Get("/users/:id", controller.GetUserById)
-	app.Put("/users", controller.UpdateUser)
-	app.Delete("/users", controller.DeleteUser)
+	app.Get("/users", usersController.GetUsers)
+	app.Get("/users/:id", usersController.GetUserById)
+	app.Put("/users", usersController.UpdateUser)
+	app.Delete("/users", usersController.DeleteUser)
 }

@@ -3,18 +3,39 @@ package service
 import (
 	"errors"
 
+	"gorm.io/gorm"
 	"henrique.mendes/users-api/dtos/request"
 	"henrique.mendes/users-api/dtos/response"
 	"henrique.mendes/users-api/mappers"
-	"henrique.mendes/users-api/repository"
+	"henrique.mendes/users-api/models"
 )
 
-func Create(data *request.UserCreateRequest) (response.UserResponse, error) {
+type usersRepository interface {
+	Paginate(page int, limit int) func(db *gorm.DB) *gorm.DB
+	Create(user models.User) (models.User, error)
+	FindByEmail(email string) models.User
+	FindById(userId uint) models.User
+	FindByNamePaginated(name string, page int, limit int) ([]models.User, int)
+	UpdateUserById(userId uint64, data request.UserUpdateRequest) models.User
+	DeleteUserById(userId uint64) error
+}
+
+type UsersService struct {
+	repository usersRepository
+}
+
+func NewUsersService(repository usersRepository) *UsersService {
+	return &UsersService{
+		repository: repository,
+	}
+}
+
+func (s *UsersService) Create(data *request.UserCreateRequest) (response.UserResponse, error) {
 	if data.Password != data.RepeatPassword {
 		return response.UserResponse{}, errors.New("Passwords does not match")
 	}
 
-	user, err := repository.Create(mappers.ToCreateUserEntity(*data))
+	user, err := s.repository.Create(mappers.ToCreateUserEntity(*data))
 
 	if err != nil {
 		return response.UserResponse{}, errors.New(err.Error())
@@ -23,8 +44,8 @@ func Create(data *request.UserCreateRequest) (response.UserResponse, error) {
 	return mappers.ToUserResponse(user), nil
 }
 
-func FindByEmail(data request.UserAuthRequest) (response.UserAuthResponse, error) {
-	user := repository.FindByEmail(data.Email)
+func (s *UsersService) FindByEmail(data request.UserAuthRequest) (response.UserAuthResponse, error) {
+	user := s.repository.FindByEmail(data.Email)
 
 	if user.Id == 0 || user.HasInvalidPassword(data.Password) {
 		return response.UserAuthResponse{}, errors.New("Wrong credentials")
@@ -33,26 +54,26 @@ func FindByEmail(data request.UserAuthRequest) (response.UserAuthResponse, error
 	return mappers.ToUserAuthResponse(user)
 }
 
-func FindById(userId uint) response.UserResponse {
-	user := repository.FindById(userId)
+func (s *UsersService) FindById(userId uint) response.UserResponse {
+	user := s.repository.FindById(userId)
 
 	return mappers.ToUserResponse(user)
 }
 
-func FindByNamePaginated(name string, page int, limit int) response.UsersListResponse {
-	users, total := repository.FindByNamePaginated(name, page, limit)
+func (s *UsersService) FindByNamePaginated(name string, page int, limit int) response.UsersListResponse {
+	users, total := s.repository.FindByNamePaginated(name, page, limit)
 
 	return mappers.ToUsersListResponse(users, total, page, limit)
 }
 
-func UpdateUserById(userId uint64, data request.UserUpdateRequest) response.UserResponse {
-	user := repository.UpdateUserById(userId, data)
+func (s *UsersService) UpdateUserById(userId uint64, data request.UserUpdateRequest) response.UserResponse {
+	user := s.repository.UpdateUserById(userId, data)
 
 	return mappers.ToUserResponse(user)
 }
 
-func DeleteUserById(userId uint64) error {
-	error := repository.DeleteUserById(userId)
+func (s *UsersService) DeleteUserById(userId uint64) error {
+	error := s.repository.DeleteUserById(userId)
 
 	return error
 }
