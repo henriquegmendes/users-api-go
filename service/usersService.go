@@ -6,26 +6,31 @@ import (
 	"henrique.mendes/users-api/dtos/request"
 	"henrique.mendes/users-api/dtos/response"
 	"henrique.mendes/users-api/mappers"
-	"henrique.mendes/users-api/models"
 	"henrique.mendes/users-api/repository"
 )
 
-func Create(data *request.UserCreateRequest) (models.User, error) {
+func Create(data *request.UserCreateRequest) (response.UserResponse, error) {
 	if data.Password != data.RepeatPassword {
-		return models.User{}, errors.New("Passwords does not match")
+		return response.UserResponse{}, errors.New("Passwords does not match")
 	}
 
 	user, err := repository.Create(mappers.ToCreateUserEntity(*data))
 
 	if err != nil {
-		return models.User{}, errors.New(err.Error())
+		return response.UserResponse{}, errors.New(err.Error())
 	}
 
-	return user, nil
+	return mappers.ToUserResponse(user), nil
 }
 
-func FindByEmail(email string) models.User {
-	return repository.FindByEmail(email)
+func FindByEmail(data request.UserAuthRequest) (response.UserAuthResponse, error) {
+	user := repository.FindByEmail(data.Email)
+
+	if user.Id == 0 || user.HasInvalidPassword(data.Password) {
+		return response.UserAuthResponse{}, errors.New("Wrong credentials")
+	}
+
+	return mappers.ToUserAuthResponse(user)
 }
 
 func FindById(userId uint) response.UserResponse {
@@ -44,4 +49,10 @@ func UpdateUserById(userId uint64, data request.UserUpdateRequest) response.User
 	user := repository.UpdateUserById(userId, data)
 
 	return mappers.ToUserResponse(user)
+}
+
+func DeleteUserById(userId uint64) error {
+	error := repository.DeleteUserById(userId)
+
+	return error
 }

@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"henrique.mendes/users-api/dtos/request"
-	"henrique.mendes/users-api/mappers"
 	"henrique.mendes/users-api/service"
 )
 
@@ -18,12 +19,12 @@ func CreateUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(validation)
 	}
 
-	user, err := service.Create(data)
+	userResponse, err := service.Create(data)
 	if err != nil {
 		return c.Status(400).Send([]byte(err.Error()))
 	}
 
-	return c.Status(201).JSON(mappers.ToUserResponse(user))
+	return c.Status(201).JSON(userResponse)
 }
 
 func AuthUser(c *fiber.Ctx) error {
@@ -37,18 +38,16 @@ func AuthUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(validation)
 	}
 
-	user := service.FindByEmail(data.Email)
-
-	if user.Id == 0 || user.HasInvalidPassword(data.Password) {
-		return c.Status(400).JSON(fiber.Map{
-			"message": "Wrong credentials",
-		})
-	}
-
-	response, err := mappers.ToUserAuthResponse(user)
+	userResponse, err := service.FindByEmail(*data)
 	if err != nil {
-		return c.Status(503).Send([]byte(err.Error()))
+		if strings.Contains(err.Error(), "credentials") {
+			return c.Status(400).JSON(fiber.Map{
+				"message": err.Error(),
+			})
+		} else {
+			return c.Status(503).Send([]byte(err.Error()))
+		}
 	}
 
-	return c.Status(200).JSON(response)
+	return c.Status(200).JSON(userResponse)
 }

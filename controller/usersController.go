@@ -40,7 +40,7 @@ func GetUserById(c *fiber.Ctx) error {
 func UpdateUser(c *fiber.Ctx) error {
 	userId, error := utils.GetTokenInfo(c)
 	if error != nil {
-		c.Status(503).JSON(error.Error())
+		return c.Status(503).JSON(error.Error())
 	}
 
 	data := new(request.UserUpdateRequest)
@@ -49,6 +49,26 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	response := service.UpdateUserById(userId, *data)
+	if response.Id == 0 {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "User not found",
+		})
+	}
 
 	return c.JSON(response)
+}
+
+func DeleteUser(c *fiber.Ctx) error {
+	userId, error := utils.GetTokenInfo(c)
+	if error != nil {
+		return c.Status(503).JSON(error.Error())
+	}
+
+	if error := service.DeleteUserById(userId); error != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": error.Error(),
+		})
+	}
+
+	return c.SendStatus(204)
 }

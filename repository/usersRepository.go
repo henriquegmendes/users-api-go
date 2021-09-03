@@ -64,5 +64,10 @@ func UpdateUserById(userId uint64, data request.UserUpdateRequest) models.User {
 	user := mappers.ToUpdateUser(data)
 
 	database.DB.Where("id = ?", userId).Updates(user).Scan(&user)
+
 	return user
+}
+
+func DeleteUserById(userId uint64) error {
+	return database.DB.Delete(&models.User{}, userId).Error
 }
