@@ -22,7 +22,6 @@ func (u UserCreateRequest) ValidateUserCreateRequest() url.Values {
 		"email":           []string{"required", "min:4", "max:100", "email"},
 		"password":        []string{"required", "min:6", "max:100"},
 		"repeat_password": []string{"required", "min:6", "max:100"},
-		"address":         []string{"min:3", "max:200"},
 	}
 
 	opts := govalidator.Options{

@@ -20,22 +20,28 @@ func NewAuthController(service *service.UsersService) *UsersController {
 // @Tags Public Routes
 // @Produce json
 // @Param data body request.UserCreateRequest true "User Data"
-// @Success 200 {object} response.UserResponse
-// @Router /users/register [post]
+// @Success 201 {object} response.UserResponse
+// @Router /api/users/register [post]
 func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 	data := new(request.UserCreateRequest)
 	if err := c.BodyParser(data); err != nil {
-		return c.Status(503).Send([]byte(err.Error()))
+		return c.Status(503).JSON(fiber.Map{
+			"message": err.Error(),
+		})
 	}
 
 	validation := data.ValidateUserCreateRequest()
 	if len(validation) != 0 {
-		return c.Status(400).JSON(validation)
+		return c.Status(400).JSON(fiber.Map{
+			"message": validation,
+		})
 	}
 
 	userResponse, err := contr.service.Create(data)
 	if err != nil {
-		return c.Status(400).Send([]byte(err.Error()))
+		return c.Status(503).JSON(fiber.Map{
+			"message": err.Error(),
+		})
 	}
 
 	return c.Status(201).JSON(userResponse)
@@ -48,16 +54,20 @@ func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 // @Produce json
 // @Param data body request.userAuthRequest true "User Data"
 // @Success 200 {object} response.userAuthResponse
-// @Router /users/auth [post]
+// @Router /api/users/auth [post]
 func (contr UsersController) AuthUser(c *fiber.Ctx) error {
 	data := new(request.UserAuthRequest)
 	if err := c.BodyParser(data); err != nil {
-		return c.Status(503).Send([]byte(err.Error()))
+		return c.Status(503).JSON(fiber.Map{
+			"message": err.Error(),
+		})
 	}
 
 	validation := data.ValidateUserAuthRequest()
 	if len(validation) != 0 {
-		return c.Status(400).JSON(validation)
+		return c.Status(400).JSON(fiber.Map{
+			"message": validation,
+		})
 	}
 
 	userResponse, err := contr.service.FindByEmail(*data)
@@ -67,7 +77,9 @@ func (contr UsersController) AuthUser(c *fiber.Ctx) error {
 				"message": err.Error(),
 			})
 		} else {
-			return c.Status(503).Send([]byte(err.Error()))
+			return c.Status(503).JSON(fiber.Map{
+				"message": err.Error(),
+			})
 		}
 	}
 

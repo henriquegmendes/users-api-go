@@ -14,9 +14,8 @@ type UserUpdateRequest struct {
 
 func (u UserUpdateRequest) ValidateUserUpdateRequest() url.Values {
 	rules := govalidator.MapData{
-		"name":    []string{"required", "min:3", "max:100"},
-		"age":     []string{"required"},
-		"address": []string{"min:3", "max:200"},
+		"name": []string{"required", "min:3", "max:100"},
+		"age":  []string{"required"},
 	}
 
 	opts := govalidator.Options{

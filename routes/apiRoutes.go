@@ -24,8 +24,8 @@ func SetupRoutes(app *fiber.App) {
 		),
 	)
 
-	app.Post("/users/register", authController.CreateUser)
-	app.Post("/users/auth", authController.AuthUser)
+	app.Post("/api/users/register", authController.CreateUser)
+	app.Post("/api/users/auth", authController.AuthUser)
 
 	app.Use(
 		jwtware.New(jwtware.Config{
@@ -34,8 +34,8 @@ func SetupRoutes(app *fiber.App) {
 		authMiddleware.CheckAuthUserExists,
 	)
 
-	app.Get("/users", usersController.GetUsers)
-	app.Get("/users/:id", usersController.GetUserById)
-	app.Put("/users", usersController.UpdateUser)
-	app.Delete("/users", usersController.DeleteUser)
+	app.Get("/api/users", usersController.GetUsers)
+	app.Get("/api/users/:id", usersController.GetUserById)
+	app.Put("/api/users", usersController.UpdateUser)
+	app.Delete("/api/users", usersController.DeleteUser)
 }

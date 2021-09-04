@@ -11,7 +11,7 @@ import (
 // @version 1.0
 // @description Swagger Documentation for Go Test
 // @termsOfService http://swagger.io/terms/
-// @BasePath /
+// @BasePath /api
 func main() {
 	database.Connect()
 	migrations.CreateTables(database.DB)

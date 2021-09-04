@@ -63,9 +63,39 @@ func TestToUserAuthResponse(t *testing.T) {
 }
 
 func TestToUsersListResponse(t *testing.T) {
+	users := []models.User{
+		{
+			Id:       1,
+			Name:     "Henrique",
+			Age:      33,
+			Email:    "henrique@henrique.com",
+			Password: []byte("12345"),
+			Address:  "Rua bla, 1234",
+		},
+	}
+	total := 10
+	page := 1
+	limit := 5
 
+	response := ToUsersListResponse(users, total, page, limit)
+
+	assert.Equal(t, "Henrique", response.Data[0].Name)
+	assert.Equal(t, page, response.Page.Page)
+	assert.Equal(t, len(users), response.Page.TotalPerPage)
+	assert.Equal(t, total, response.Page.TotalResults)
+	assert.Equal(t, 2, response.Page.LastPage)
 }
 
 func TestToUpdateUser(t *testing.T) {
+	data := request.UserUpdateRequest{
+		Name:    "Henrique",
+		Age:     33,
+		Address: "Rua teste",
+	}
 
+	userToUpdate := ToUpdateUser(data)
+
+	assert.Equal(t, "Henrique", userToUpdate.Name)
+	assert.Equal(t, 33, userToUpdate.Age)
+	assert.Equal(t, "Rua teste", userToUpdate.Address)
 }

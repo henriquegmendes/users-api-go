@@ -26,7 +26,7 @@ func NewUsersController(service *service.UsersService) *UsersController {
 // @Produce json
 // @Param name query string false "User Name"
 // @Success 200 {array} response.UsersListResponse
-// @Router /users [get]
+// @Router /api/users [get]
 func (contr UsersController) GetUsers(c *fiber.Ctx) error {
 	name := c.Query("name", "")
 	page, _ := strconv.Atoi(c.Query("page", "1"))
@@ -44,7 +44,7 @@ func (contr UsersController) GetUsers(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path integer true "User ID"
 // @Success 200 {object} response.UserResponse
-// @Router /users/{id} [get]
+// @Router /api/users/{id} [get]
 func (contr UsersController) GetUserById(c *fiber.Ctx) error {
 	userId, error := strconv.ParseUint(c.Params("id"), 10, 64)
 	if error != nil {
@@ -70,16 +70,20 @@ func (contr UsersController) GetUserById(c *fiber.Ctx) error {
 // @Produce json
 // @Param data body request.UserUpdateRequest true "User Update Data"
 // @Success 200 {object} response.UserResponse
-// @Router /users [put]
+// @Router /api/users [put]
 func (contr UsersController) UpdateUser(c *fiber.Ctx) error {
 	userId, error := utils.GetTokenInfo(c)
 	if error != nil {
-		return c.Status(503).JSON(error.Error())
+		return c.Status(503).JSON(fiber.Map{
+			"message": error.Error(),
+		})
 	}
 
 	data := new(request.UserUpdateRequest)
 	if err := c.BodyParser(data); err != nil {
-		return c.Status(503).Send([]byte(err.Error()))
+		return c.Status(503).JSON(fiber.Map{
+			"message": error.Error(),
+		})
 	}
 
 	response := contr.service.UpdateUserById(userId, *data)
@@ -98,11 +102,13 @@ func (contr UsersController) UpdateUser(c *fiber.Ctx) error {
 // @Tags Authenticated Routes
 // @Produce json
 // @Success 204
-// @Router /users [delete]
+// @Router /api/users [delete]
 func (contr UsersController) DeleteUser(c *fiber.Ctx) error {
 	userId, error := utils.GetTokenInfo(c)
 	if error != nil {
-		return c.Status(503).JSON(error.Error())
+		return c.Status(503).JSON(fiber.Map{
+			"message": error.Error(),
+		})
 	}
 
 	if error := contr.service.DeleteUserById(userId); error != nil {
