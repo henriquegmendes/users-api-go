@@ -24,7 +24,7 @@ func SetupRoutes(app *fiber.App) {
 		),
 	)
 
-	app.Post("/users", authController.CreateUser)
+	app.Post("/users/register", authController.CreateUser)
 	app.Post("/users/auth", authController.AuthUser)
 
 	app.Use(

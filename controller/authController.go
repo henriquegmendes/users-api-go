@@ -14,6 +14,14 @@ func NewAuthController(service *service.UsersService) *UsersController {
 	}
 }
 
+// Register User.
+// @Description Register a new User
+// @Summary Register a new User
+// @Tags Public Routes
+// @Produce json
+// @Param data body request.UserCreateRequest true "User Data"
+// @Success 200 {object} response.UserResponse
+// @Router /users/register [post]
 func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 	data := new(request.UserCreateRequest)
 	if err := c.BodyParser(data); err != nil {
@@ -33,6 +41,14 @@ func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 	return c.Status(201).JSON(userResponse)
 }
 
+// Authenticate User
+// @Description Authenticate User Based on email/password Credentials
+// @Summary Authenticate User Based on email/password Credentials
+// @Tags Public Routes
+// @Produce json
+// @Param data body request.userAuthRequest true "User Data"
+// @Success 200 {object} response.userAuthResponse
+// @Router /users/auth [post]
 func (contr UsersController) AuthUser(c *fiber.Ctx) error {
 	data := new(request.UserAuthRequest)
 	if err := c.BodyParser(data); err != nil {
