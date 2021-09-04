@@ -10,7 +10,7 @@ import (
 	"henrique.mendes/users-api/models"
 )
 
-type usersRepository interface {
+type UsersRepository interface {
 	Paginate(page int, limit int) func(db *gorm.DB) *gorm.DB
 	Create(user models.User) (models.User, error)
 	FindByEmail(email string) models.User
@@ -21,10 +21,10 @@ type usersRepository interface {
 }
 
 type UsersService struct {
-	repository usersRepository
+	repository UsersRepository
 }
 
-func NewUsersService(repository usersRepository) *UsersService {
+func NewUsersService(repository UsersRepository) *UsersService {
 	return &UsersService{
 		repository: repository,
 	}
@@ -48,7 +48,7 @@ func (s *UsersService) FindByEmail(data request.UserAuthRequest) (response.UserA
 	user := s.repository.FindByEmail(data.Email)
 
 	if user.Id == 0 || user.HasInvalidPassword(data.Password) {
-		return response.UserAuthResponse{}, errors.New("Wrong credentials")
+		return response.UserAuthResponse{}, errors.New("Wrong Credentials")
 	}
 
 	return mappers.ToUserAuthResponse(user)

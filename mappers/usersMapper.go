@@ -3,7 +3,6 @@ package mappers
 import (
 	"math"
 
-	"golang.org/x/crypto/bcrypt"
 	"henrique.mendes/users-api/dtos/request"
 	"henrique.mendes/users-api/dtos/response"
 	"henrique.mendes/users-api/models"
@@ -11,7 +10,7 @@ import (
 )
 
 func ToCreateUserEntity(data request.UserCreateRequest) models.User {
-	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(data.Password), 14)
+	encryptedPassword, _ := utils.GenerateEncryptedPassword(data.Password)
 
 	return models.User{
 		Name:     data.Name,
