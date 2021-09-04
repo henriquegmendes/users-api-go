@@ -4,7 +4,7 @@ This repository keeps the API application to perform a User CRUD operations.
 
 ## API Characteristics
 
-* Stack used: Go v1.17, Fiber, Gorm, Go-Jwt, Go-Bcrypt, Docker
+* Stack used: Go v1.17, Fiber, Gorm, MySQL, Go-Jwt, Go-Bcrypt, Docker
 * Requests implemented: GET, POST, PUT, DELETE
 <!-- * Deployed at AWS --- [http://ec2-54-80-141-128.compute-1.amazonaws.com:8080](http://ec2-54-80-141-128.compute-1.amazonaws.com:8080) -->
 * Public Routes: "/api/users/register", "/api/users/auth", "/swagger"
