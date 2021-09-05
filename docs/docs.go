@@ -26,14 +26,14 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/users": {
+        "/users": {
             "get": {
                 "description": "Retrieves all users paginated.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Authenticated Routes"
+                    "Private Routes"
                 ],
                 "summary": "Retrieves all users paginated.",
                 "parameters": [
@@ -42,6 +42,25 @@ var doc = `{
                         "description": "User Name",
                         "name": "name",
                         "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Page Number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cToken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -62,7 +81,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authenticated Routes"
+                    "Private Routes"
                 ],
                 "summary": "Update a User based on Id info present JWT token",
                 "parameters": [
@@ -74,6 +93,13 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/request.UserUpdateRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cToken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -91,15 +117,24 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Authenticated Routes"
+                    "Private Routes"
                 ],
                 "summary": "Delete a User based on Id info present JWT token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cToken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {}
                 }
             }
         },
-        "/api/users/auth": {
+        "/users/auth": {
             "post": {
                 "description": "Authenticate User Based on email/password Credentials",
                 "produces": [
@@ -130,7 +165,7 @@ var doc = `{
                 }
             }
         },
-        "/api/users/register": {
+        "/users/register": {
             "post": {
                 "description": "Register a new User",
                 "produces": [
@@ -161,14 +196,14 @@ var doc = `{
                 }
             }
         },
-        "/api/users/{id}": {
+        "/users/{id}": {
             "get": {
                 "description": "Retrieves user based on its Id",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Authenticated Routes"
+                    "Private Routes"
                 ],
                 "summary": "Retrieves user based on its Id",
                 "parameters": [
@@ -177,6 +212,13 @@ var doc = `{
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer \u003cToken\u003e",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],

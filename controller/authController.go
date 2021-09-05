@@ -21,7 +21,7 @@ func NewAuthController(service *service.UsersService) *UsersController {
 // @Produce json
 // @Param data body request.UserCreateRequest true "User Data"
 // @Success 201 {object} response.UserResponse
-// @Router /api/users/register [post]
+// @Router /users/register [post]
 func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 	data := new(request.UserCreateRequest)
 	if err := c.BodyParser(data); err != nil {
@@ -54,7 +54,7 @@ func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 // @Produce json
 // @Param data body request.UserAuthRequest true "User Data"
 // @Success 200 {object} response.UserAuthResponse
-// @Router /api/users/auth [post]
+// @Router /users/auth [post]
 func (contr UsersController) AuthUser(c *fiber.Ctx) error {
 	data := new(request.UserAuthRequest)
 	if err := c.BodyParser(data); err != nil {

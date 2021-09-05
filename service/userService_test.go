@@ -20,9 +20,9 @@ func TestServiceCreateUser(t *testing.T) {
 	assert.Equal(t, 2, len(users.Data))
 
 	user, err := s.Create(&request.UserCreateRequest{
-		Name:           "Henrique",
+		Name:           "John",
 		Age:            33,
-		Email:          "henrique@henrique.com",
+		Email:          "john@snow.com",
 		Password:       "123456",
 		RepeatPassword: "123456",
 		Address:        "Rua Bla, 1234",
@@ -32,8 +32,8 @@ func TestServiceCreateUser(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
-	assert.Equal(t, "Henrique", user.Name)
-	assert.Equal(t, "henrique@henrique.com", user.Email)
+	assert.Equal(t, "John", user.Name)
+	assert.Equal(t, "john@snow.com", user.Email)
 	assert.Equal(t, 3, len(users.Data))
 }
 
@@ -41,7 +41,7 @@ func TestServiceCreateUserWithEmailAlreadyTaken(t *testing.T) {
 	s := NewUsersService(newMockUserDAO())
 
 	_, err := s.Create(&request.UserCreateRequest{
-		Name:           "Henrique",
+		Name:           "John",
 		Age:            33,
 		Email:          "john.snow@winterfell.com",
 		Password:       "123456",
@@ -139,12 +139,12 @@ func TestServiceUpdateUser(t *testing.T) {
 	assert.Equal(t, "John Snow", userBeforeUpdate.Name)
 
 	userAfterUpdate := s.UpdateUserById(1, request.UserUpdateRequest{
-		Name:    "Henrique",
+		Name:    "Joseph",
 		Age:     55,
 		Address: "Summerfell",
 	})
 
-	assert.NotNil(t, "Henrique", userAfterUpdate.Name)
+	assert.NotNil(t, "Joseph", userAfterUpdate.Name)
 	assert.Equal(t, 55, userAfterUpdate.Age)
 	assert.Equal(t, "Summerfell", userAfterUpdate.Address)
 }
