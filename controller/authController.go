@@ -52,8 +52,8 @@ func (contr UsersController) CreateUser(c *fiber.Ctx) error {
 // @Summary Authenticate User Based on email/password Credentials
 // @Tags Public Routes
 // @Produce json
-// @Param data body request.userAuthRequest true "User Data"
-// @Success 200 {object} response.userAuthResponse
+// @Param data body request.UserAuthRequest true "User Data"
+// @Success 200 {object} response.UserAuthResponse
 // @Router /api/users/auth [post]
 func (contr UsersController) AuthUser(c *fiber.Ctx) error {
 	data := new(request.UserAuthRequest)

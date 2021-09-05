@@ -28,6 +28,7 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/api/users/auth", authController.AuthUser)
 
 	app.Use(
+		"/api/*",
 		jwtware.New(jwtware.Config{
 			SigningKey: []byte("secret"),
 		}),

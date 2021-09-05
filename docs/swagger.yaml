@@ -1,0 +1,188 @@
+basePath: /api
+definitions:
+  request.UserAuthRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  request.UserCreateRequest:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      repeat_password:
+        type: string
+    type: object
+  request.UserUpdateRequest:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      name:
+        type: string
+    type: object
+  response.Page:
+    properties:
+      last_page:
+        type: integer
+      page:
+        type: integer
+      page_total:
+        type: integer
+      total_results:
+        type: integer
+    type: object
+  response.UserAuthResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  response.UserResponse:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  response.UsersListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/response.UserResponse'
+        type: array
+      page:
+        $ref: '#/definitions/response.Page'
+        type: object
+    type: object
+info:
+  contact: {}
+  description: Swagger Documentation for Go Test
+  license: {}
+  termsOfService: http://swagger.io/terms/
+  title: Go Users Api Swagger Doc
+  version: "1.0"
+paths:
+  /api/users:
+    delete:
+      description: Delete a User based on Id info present JWT token
+      produces:
+      - application/json
+      responses:
+        "204": {}
+      summary: Delete a User based on Id info present JWT token
+      tags:
+      - Authenticated Routes
+    get:
+      description: Retrieves all users paginated.
+      parameters:
+      - description: User Name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.UsersListResponse'
+            type: array
+      summary: Retrieves all users paginated.
+      tags:
+      - Authenticated Routes
+    put:
+      description: Update a User based on Id info present JWT token
+      parameters:
+      - description: User Update Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+      summary: Update a User based on Id info present JWT token
+      tags:
+      - Authenticated Routes
+  /api/users/{id}:
+    get:
+      description: Retrieves user based on its Id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+      summary: Retrieves user based on its Id
+      tags:
+      - Authenticated Routes
+  /api/users/auth:
+    post:
+      description: Authenticate User Based on email/password Credentials
+      parameters:
+      - description: User Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserAuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserAuthResponse'
+      summary: Authenticate User Based on email/password Credentials
+      tags:
+      - Public Routes
+  /api/users/register:
+    post:
+      description: Register a new User
+      parameters:
+      - description: User Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+      summary: Register a new User
+      tags:
+      - Public Routes
+swagger: "2.0"
